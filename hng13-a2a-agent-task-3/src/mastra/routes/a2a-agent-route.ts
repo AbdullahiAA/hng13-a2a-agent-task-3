@@ -28,7 +28,7 @@ export const a2aAgentRoute = registerApiRoute("/a2a/agent/:agentId", {
             error: {
               code: -32600,
               message:
-                'Invalid Request: jsonrpc must be "2.0" and id is required',lo
+                'Invalid Request: jsonrpc must be "2.0" and id is required',
             },
           },
           400
