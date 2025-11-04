@@ -81,7 +81,7 @@ export const a2aAgentRoute = registerApiRoute("/a2a/agent/:agentId", {
 
       // Convert A2A messages to Mastra format
       const mastraMessages = messagesList.map((msg: any) => ({
-        role: msg?.role,
+        role: msg?.role === "agent" ? "assistant" : msg?.role,
         content:
           msg?.parts
             ?.map((part: any) => {
