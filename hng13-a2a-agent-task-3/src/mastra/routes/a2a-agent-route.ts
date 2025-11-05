@@ -1,3 +1,5 @@
+import { Agent, ToolsInput } from "@mastra/core/agent";
+import { Metric } from "@mastra/core/eval";
 import { registerApiRoute } from "@mastra/core/server";
 import { randomUUID } from "crypto";
 
@@ -33,8 +35,11 @@ export const a2aAgentRoute = registerApiRoute("/a2a/agent/:agentId", {
         );
       }
 
-      const agent = mastra.getAgent(agentId);
-      if (!agent) {
+      let agent: Agent<any, ToolsInput, Record<string, Metric>>;
+
+      try {
+        agent = mastra.getAgent(agentId);
+      } catch (error) {
         return c.json(
           {
             jsonrpc: "2.0",
@@ -42,6 +47,9 @@ export const a2aAgentRoute = registerApiRoute("/a2a/agent/:agentId", {
             error: {
               code: -32602,
               message: `Agent '${agentId}' not found`,
+              data: {
+                details: `Agent '${agentId}' not found`,
+              },
             },
           },
           404
@@ -200,13 +208,13 @@ export const a2aAgentRoute = registerApiRoute("/a2a/agent/:agentId", {
           id: null,
           error: {
             code: -32603,
-            message: "Internal error",
+            message: error?.message || "Internal error",
             data: {
               details: error.message,
             },
           },
         },
-        500
+        error?.details?.status || 500
       );
     }
   },
